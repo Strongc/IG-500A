@@ -1,87 +1,41 @@
 #include "stdafx.h"
-#include <stdio.h>
-#include <time.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sbgCom.h>
+#include "ig500Trigger.h"
 
-/*!
- *	Structure used to store the received data.
- */
-struct UserData
-{
-	float	accelerometers[3];	/*!< Accelerometers in m/s^2. */
-	float	gyroscopes[3];		/*!< 陀螺仪数据，角速度 in m/s. */
-	uint32	triggerMask;		/*!< Store which new data we have. */
-};
-
-//----------------------------------------------------------------------//
-//  Callback functions used by trigger mode                             //
-//----------------------------------------------------------------------//
-
-/*!
- *	Functon called each time we have an error on a triggered frame.
- *	\param[in]	pHandler			Our sbgCom protocol handler.
- *	\param[in]	errorCode			Error code that have occured during a continuous operation.
- *	\param[in]	pUsrArg				User argument pointer as defined in sbgSetContinuousErrorCallback function.
- */
 void triggerErrorCallback(SbgProtocolHandleInt *pHandler, SbgErrorCode errorCode, void *pUsrArg)
 {
 	char errorMsg[256];
 
-	//
 	// Convert our error code to a human readable error message
-	//
 	sbgComErrorToString(errorCode, errorMsg);
 
-	//
 	// Display an error message
-	//
-	fprintf(stderr,"continuousErrorCallback: We have received the following error %s\n", errorMsg);
+	fprintf(stderr, "continuousErrorCallback: We have received the following error %s\n", errorMsg);
 	fflush(stderr);
 }
 
-/*!
- *	Functon called each time we have received a new data on a triggered frame.
- *	\param[in]	pHandler								Our associated protocol handle.
- *  \param[in]	triggerMask								Trigger bit mask indicating which data have generated the triggered output
- *	\param[in]	pOutput									Pointer to our filled SbgOutput struct.<br>
- *														Don't delete output as you don't have the ownership.
- *	\param[in]	pUsrArg									Pointer to our user defined argument.
- */
 void triggerCallback(SbgProtocolHandleInt *handler, uint32 triggerMask, SbgOutput *pOutput, void *pUsrArg)
 {
 	UserData *pUserData;
 
-	//
 	// Check if our intput arguments are valid
-	//
-	if ( (pOutput) && (pUsrArg) )
+	if ((pOutput) && (pUsrArg))
 	{
-		//
 		// Get our user buffer to store our received data
-		//
 		pUserData = (UserData*)pUsrArg;
 
-		//
 		// Copy our trigger mask
-		//
 		pUserData->triggerMask = triggerMask;
 
-		//
 		// Check if our output struct contains accelerometers data and if we have received new one (according to our triggers configuration)
-		//
-		if ( (pOutput->outputMask&SBG_OUTPUT_ACCELEROMETERS) && (triggerMask&SBG_TRIGGER_MAIN_LOOP_DIVIDER) )
+		if ((pOutput->outputMask&SBG_OUTPUT_ACCELEROMETERS) && (triggerMask&SBG_TRIGGER_MAIN_LOOP_DIVIDER))
 		{
-			//
 			// We have received a new accelerometers data
-			//
 			pUserData->accelerometers[0] = pOutput->accelerometers[0];
 			pUserData->accelerometers[1] = pOutput->accelerometers[1];
 			pUserData->accelerometers[2] = pOutput->accelerometers[2];
 		}
 
-		if ( (pOutput->outputMask&SBG_OUTPUT_GPS_NAVIGATION) && (triggerMask&SBG_TRIGGER_GPS_VELOCITY) )
+		if ((pOutput->outputMask&SBG_OUTPUT_GPS_NAVIGATION) && (triggerMask&SBG_TRIGGER_GPS_VELOCITY))
 		{
 			// 除以100，得到m/s
 			pUserData->gyroscopes[0] = pOutput->gpsVelocity[0] / 100.0f;
@@ -91,120 +45,62 @@ void triggerCallback(SbgProtocolHandleInt *handler, uint32 triggerMask, SbgOutpu
 	}
 }
 
-/*
-数据积分，陀螺仪加速度处理得到xyz角度，加速度计数据处理得到运动速度
-*/
-void loop(UserData *data);
-
-/*!
- *	Main entry point.
- *	\param[in]	argc		Number of input arguments.
- *	\param[in]	argv		Input arguments as an array of strings.
- *	\return					0 if no error and -1 in case of error.
- */
-/*
-int main(int argc, char** argv)
-{
-	SbgProtocolHandle protocolHandle;
-	SbgErrorCode error = SBG_NO_ERROR;
-	UserData receivedData;
-
-	//
-	// Initialise our receivedData struct to 0
-	//
+void IG::setUp(){
 	memset(&receivedData, 0x00, sizeof(UserData));
-
-	//
-	// Init our communications with the device (Please change here the com port and baud rate)
-	//
 	error = sbgComInit("COM6", 115200, &protocolHandle);
-
-	//
-	// Test if the sbgCom initialization was ok
-	//
-	if (error == SBG_NO_ERROR)
-	{
-		//
-		// Configure the first trigger channel on the main loop divider and outputs the accelerometers
-		//
+	if (error == SBG_NO_ERROR){
 		error = sbgSetTriggeredMode(protocolHandle, 0, SBG_TRIGGER_MAIN_LOOP_DIVIDER, SBG_OUTPUT_ACCELEROMETERS);
-
-		if (error == SBG_NO_ERROR)
-		{
-			//
-			// Configure the second trigger channel on a new GPS velocity information and outputs the GPS navigation such as velocity
-			//
+		if (error == SBG_NO_ERROR){
 			error = sbgSetTriggeredMode(protocolHandle, 1, SBG_TRIGGER_GPS_VELOCITY, SBG_OUTPUT_GYROSCOPES_RAW);
-
-			if (error == SBG_NO_ERROR)
-			{
-				//
-				// We could configure the device, now, simply enable the triggered output mode, with a main loop freq divider at 4
-				//
+			if (error == SBG_NO_ERROR){
 				error = sbgSetContinuousMode(protocolHandle, SBG_TRIGGERED_MODE_ENABLE, 4);
-				
-				if (error == SBG_NO_ERROR)
-				{
+				if (error == SBG_NO_ERROR){
 					// Now, we can define our trigger handlers and optionaly a error handler
 					// The trigger callback function will store euler angles and velocity in the eulerVelocity list
 					sbgSetContinuousErrorCallback(protocolHandle, triggerErrorCallback, NULL);
 					sbgSetTriggeredModeCallback(protocolHandle, triggerCallback, &receivedData);
-
 					// Print our header
 					printf("Acceleromters\t\t\tGPS Velocity\n");
-
 					// Loop forever
 					do
 					{
 						// Check for new frames received
 						sbgProtocolContinuousModeHandle(protocolHandle);
-
 						// Display values on the screen
-						printf("%3.2f\t%3.2f\t%3.2f\t\t%3.2f\t%3.2f\t%3.2f\n",	receivedData.accelerometers[0], receivedData.accelerometers[1], receivedData.accelerometers[2],
+						printf("%3.2f\t%3.2f\t%3.2f\t\t%3.2f\t%3.2f\t%3.2f\n", receivedData.accelerometers[0], receivedData.accelerometers[1], receivedData.accelerometers[2],
 							receivedData.gyroscopes[0], receivedData.gyroscopes[1], receivedData.gyroscopes[2]);
-
 						// Unload the CPU
 						sbgSleep(10);
-
-					} while(1);
+					} while (1);
 				}
-				else
-				{
+				else {
 					fprintf(stderr, "Could not set the trigger configuration\n");
 				}
 
 			}
-			else
-			{
+			else {
 				fprintf(stderr, "Could not set the trigger configuration\n");
 			}
 		}
-		else
-		{
+		else {
 			fprintf(stderr, "Could not set the trigger configuration\n");
 		}
 
 		// Close our protocol system
 		sbgProtocolClose(protocolHandle);
 	}
-	else
-	{
+	else {
 		fprintf(stderr, "Unable to open IG-500 device\n");
 	}
 
-	return 0;
+	return;
 }
-*/
-float fXAngle = 0, fYAngle = 0, fZAngle = 0;
-float fXSpeed = 0, fYSpeed = 0, fZSpeed = 0;
 
-void loop(UserData *data){
-
+void IG::loop(UserData *data){
 	if (data == NULL){
 		printf("wrong data\n");
 		return;
 	}
-
 	float fXRtSpeed = data->gyroscopes[0];
 	float fYRtSpeed = data->gyroscopes[1];
 	float fZRtSpeed = data->gyroscopes[2];
@@ -212,16 +108,15 @@ void loop(UserData *data){
 	float fXSpeed = data->accelerometers[0];
 	float fYSpeed = data->accelerometers[1];
 	float fZSpeed = data->accelerometers[2];
-	
-	//0.01秒积分,虽然误差很大，但是先这样
-	fXAngle += fXRtSpeed*0.01;
-	fYAngle += fYRtSpeed*0.01;
-	fZAngle += fZRtSpeed*0.01;
 
-	fXSpeed += fXSpeed*0.01;
-	fYSpeed += fYSpeed*0.01;
-	fZSpeed += fZSpeed*0.01;
-	
+	//0.01秒积分,虽然误差很大，但是先这样
+	fXAngle += fXRtSpeed*(float)0.01;
+	fYAngle += fYRtSpeed*(float)0.01;
+	fZAngle += fZRtSpeed*(float)0.01;
+
+	fXSpeed += fXSpeed*(float)0.01;
+	fYSpeed += fYSpeed*(float)0.01;
+	fZSpeed += fZSpeed*(float)0.01;
+
 	return;
 }
-

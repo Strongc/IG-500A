@@ -4,6 +4,8 @@
 #pragma once
 #include "afxwin.h"
 #include "Plot.h"
+// ig added
+#include "ig500Trigger.h"
 
 using namespace RealtimeCurve;
 
@@ -31,6 +33,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimerPro(UINT nIDEvent);
 	afx_msg void OnBnClickedStart();
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnBnClickedSetting();
@@ -46,7 +49,8 @@ protected:
 	CRect m_rectOldPlotWindow;
 private:
 	float m_time;
-	
+	IG *ig;
+
 protected:
 	CButton m_btnExit;
 	int m_iBtnExitFromRight;

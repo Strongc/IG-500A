@@ -29,6 +29,7 @@ namespace RealtimeCurve{
 		float	GetPointX(int nIndex);
 		float	GetPointY(int nIndex);
 		int		GetPointCount();
+		void CLine::RemoveAllPoints();
 		
 		inline CString	getLineName()				{	return this->LineName;	}
 		inline void		setLineName(CString name)	{	this->LineName = name;	}

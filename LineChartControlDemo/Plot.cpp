@@ -40,6 +40,7 @@ namespace RealtimeCurve{
 	CLine::CLine(const CLine &nLine)
 	{
 		*this = nLine;	// 调用等号重载
+		//函数功能初始化一个临界资源对象
 		InitializeCriticalSection ( & g_cs ) ;
 	}
 
@@ -98,6 +99,16 @@ namespace RealtimeCurve{
 		this->m_pointArrayPtr[this->m_currentSize-1].y = y;
 		
 		LeaveCriticalSection ( & g_cs ) ;
+	}
+
+	// remove Points
+	void CLine::RemoveAllPoints(){
+		this->m_currentSize = 0;
+		if (m_pointArrayPtr){
+			delete[] m_pointArrayPtr;
+			m_pointArrayPtr = new Point[MaxPointsCount];
+		}
+		ASSERT(m_pointArrayPtr);
 	}
 
 	float CLine::GetPointX(int nIndex)

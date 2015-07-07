@@ -12,7 +12,6 @@ using namespace RealtimeCurve;
 #define new DEBUG_NEW
 #endif
 
-
 // CAboutDlg dialog used for App About
 
 class CAboutDlg : public CDialog
@@ -44,14 +43,11 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 END_MESSAGE_MAP()
 
-
 // CLineChartControlDemoDlg dialog
-
-
-
 CLineChartControlDemoDlg::CLineChartControlDemoDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CLineChartControlDemoDlg::IDD, pParent)
 {
+	ig = new IG();  // 初始化ig类
 	m_time	= 0.0f;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_iBtnExitFromRight = 10;
@@ -201,6 +197,19 @@ void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 	//CDialog::OnTimer(nIDEvent);
 }
 
+/*
+我们的timer, TODO
+*/
+void CLineChartControlDemoDlg::OnTimerPro(UINT nIDEvent){
+	//1.从IG类获取数据, 这里的m_time增加的时间为0.2f，但是肯定是要更改的，改为loop的睡眠时间
+	FinalData finalData;
+	memset(&finalData, 0, sizeof(finalData));
+	ig->getData(&finalData);
+	//增加点, TODO
+	m_plot.AddNewPoint(m_time, finalData.Angle[0], 0);
+	m_plot.AddNewPoint(m_time, finalData.Angle[1], 1);
+}
+
 void CLineChartControlDemoDlg::OnBnClickedStart()
 {
 	SetTimer(1,10,NULL);
@@ -216,7 +225,7 @@ void CLineChartControlDemoDlg::OnBnClickedStop()
 	m_plot.Stop();
 	for(int i=0;i<m_plot.GetLineCount();i++)
 	{
-		//m_plot.GetLineByIndex(i).RemoveAllPoints();
+		m_plot.GetLineByIndex(i)->RemoveAllPoints();
 	}
 	GetDlgItem(IDC_START)->EnableWindow();
 	m_plot.Invalidate();
@@ -230,8 +239,7 @@ void CLineChartControlDemoDlg::OnSize(UINT nType, int cx, int cy)
 	CDialog::OnSize(nType, cx, cy);
 	CRect rect;
 	GetClientRect(&rect);
-
-		
+	
 	if(m_btnExit.GetSafeHwnd())
 	{
 		m_btnExit.MoveWindow(rect.right-m_iBtnExitFromRight-m_rectBtnExit.Width(),
@@ -247,8 +255,6 @@ void CLineChartControlDemoDlg::OnSize(UINT nType, int cx, int cy)
 			rect.right-m_iBtnExitFromRight-5-m_rectOldPlotWindow.left,
 			rect.bottom-m_iBtnExitFromBottom-m_rectBtnExit.Height()-7-m_rectOldPlotWindow.top);
 	}
-
-	
 }
 /*
  Check window size while resizeing, if small than origianl size, then restore to original size.

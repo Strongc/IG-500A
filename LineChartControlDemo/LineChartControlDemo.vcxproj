@@ -123,6 +123,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ig500Trigger.h" />
     <ClInclude Include="LineChartControlDemo.h" />
     <ClInclude Include="LineChartControlDemoDlg.h" />
     <ClInclude Include="Plot.h" />
