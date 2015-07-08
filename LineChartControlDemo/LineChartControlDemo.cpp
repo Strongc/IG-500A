@@ -55,6 +55,17 @@ BOOL CLineChartControlDemoApp::InitInstance()
 
 	CLineChartControlDemoDlg dlg;
 	m_pMainWnd = &dlg;
+	
+	//
+	CLineChartControlDemoDlg *pAnother = new CLineChartControlDemoDlg();
+	// FIXME
+	// 初期打算封装一个设置参数的函数，然后每个dialog设置不同的参数，
+	//即调用参数传不同的值，这样框图一样也可以达到不同的效果
+	if (pAnother){
+		BOOL ret = pAnother->Create(IDD_LINECHARTCONTROLDEMO_DIALOG1);
+	}
+	pAnother->ShowWindow(SW_SHOWNORMAL);
+	//
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{

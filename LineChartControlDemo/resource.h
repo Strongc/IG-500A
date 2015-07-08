@@ -1,11 +1,12 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by LineChartControlDemo.rc
+// Microsoft Visual C++ 生成的包含文件。
+// 供 LineChartControlDemo.rc 使用
 //
 #define IDM_ABOUTBOX                    0x0010
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_LINECHARTCONTROLDEMO_DIALOG 102
+#define IDD_LINECHARTCONTROLDEMO_DIALOG1 103
 #define IDR_MAINFRAME                   128
 #define IDC_STOP                        1001
 #define IDC_START                       1002
