@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sbgCom.h>
+//定义函数指针
+typedef void(*TimerFunc)();
+
 /*
 定义封装类，封装ig500a的获取数据和处理数据
 在外界，调用函数就可以得到数据，进行绘制
@@ -27,7 +30,13 @@ void triggerCallback(SbgProtocolHandleInt *handler, uint32 triggerMask, SbgOutpu
 class IG{
 public:
 	void setUp();
+	//定时函数
 	void loop(UserData *data);
+	//起定时器
+	void startTimer(TimerFunc *);
+	/*
+	获取传感器的值，出参形式返回
+	*/
 	void getData(FinalData *data){
 		data->Angle[0] = fXAngle;
 		data->Angle[1] = fYAngle;
@@ -49,6 +58,6 @@ private:
 	fYSpeed: y 方向的速度
 	fZSpeed: z 方向的速度
 	*/
-	float fXAngle = 0, fYAngle = 0, fZAngle = 0;
-	float fXSpeed = 0, fYSpeed = 0, fZSpeed = 0;
+	float fXAngle = 100, fYAngle = 100, fZAngle = 100;
+	float fXSpeed = 200, fYSpeed = 200, fZSpeed = 200;
 };

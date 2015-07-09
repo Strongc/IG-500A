@@ -180,6 +180,17 @@ HCURSOR CLineChartControlDemoDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+/*
+setType方法
+*/
+void CLineChartControlDemoDlg::setType(int type){
+	this->dataType = type;
+	return;
+}
+
+/*
+ontimer函数，6个图的值通过timer控制
+*/
 void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 {
 
@@ -187,18 +198,49 @@ void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 	//If you want to use x values in any way, 
 	//you may calculate point x in the way that point y is calculated.
 	//see also: DrawLines(CDC* pDC);
-	float  y0 = 500*sin(m_time/5.0f);
-	float y1 = 500*cos(m_time/10.0f);
+	//float  y0 = 500*sin(m_time/5.0f);
+	//float y1 = 500*cos(m_time/10.0f);
 	
+	/*获取y0, 根据ig500a传回的值
+	*/
+	FinalData data;
+	memset(&data, 0, sizeof(FinalData));
+	ig->getData(&data);
+	float y0 = 0;
+	switch (dataType)
+	{
+	case 1:
+		y0 = data.Angle[0];
+		break;
+	case 2:
+		y0 = data.Angle[1];
+		break;
+	case 3:
+		y0 = data.Angle[2];
+		break;
+	case 4:
+		y0 = data.Speed[0];
+		break;
+	case 5:
+		y0 = data.Speed[1];
+		break;
+	case 6:
+		y0 = data.Speed[2];
+		break;
+	default:
+		ASSERT(FALSE);
+	}
+
 	m_plot.AddNewPoint(m_time,y0,0);
-	m_plot.AddNewPoint(m_time,y1,1);
-	m_time += 0.20f;
+	//m_plot.AddNewPoint(m_time,y1,1);
+	// time更改每0.1秒绘制一个点
+	m_time += 0.10f;
 	//m_plot.GetAxisX().GetRangeLowerLimit() += 0.10f; 
 	//CDialog::OnTimer(nIDEvent);
 }
 
 /*
-我们的timer, TODO
+我们的timer, TODO,算了，直接在上面OnTimer更改了
 */
 void CLineChartControlDemoDlg::OnTimerPro(UINT nIDEvent){
 	//1.从IG类获取数据, 这里的m_time增加的时间为0.2f，但是肯定是要更改的，改为loop的睡眠时间

@@ -16,13 +16,14 @@ class CLineChartControlDemoDlg : public CDialog
 public:
 	CLineChartControlDemoDlg(CWnd* pParent = NULL);	// standard constructor
 
+	// FIXME 添加设置Type的函数
+	void setType(int type);
 // Dialog Data
 	enum { IDD = IDD_LINECHARTCONTROLDEMO_DIALOG };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
-
-
+		
 // Implementation
 protected:
 	HICON m_hIcon;
@@ -50,6 +51,8 @@ protected:
 private:
 	float m_time;
 	IG *ig;
+	// dataType 为了实现数据种类, 1为xAngel 2为yAngle 3为zAngle 4为xSpeed 5为ySpeed 6为zSpeed
+	int dataType = 1;
 
 protected:
 	CButton m_btnExit;

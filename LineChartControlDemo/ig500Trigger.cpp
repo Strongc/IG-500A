@@ -96,6 +96,10 @@ void IG::setUp(){
 	return;
 }
 
+/*
+UserData为输入数据，然后处理数据，更新fSpeed，fAngle值
+函数名为loop，说明需要期定时器来每0.1秒调用
+*/
 void IG::loop(UserData *data){
 	if (data == NULL){
 		printf("wrong data\n");
@@ -118,5 +122,12 @@ void IG::loop(UserData *data){
 	fYSpeed += fYSpeed*(float)0.01;
 	fZSpeed += fZSpeed*(float)0.01;
 
+	return;
+}
+
+/*
+起定时器函数
+*/
+void IG::startTimer(TimerFunc *timerFunc){
 	return;
 }
