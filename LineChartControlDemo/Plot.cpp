@@ -425,7 +425,7 @@ namespace RealtimeCurve{
 			if (i%ShowTextGrap==0)
 			{
 				CFont *oldFont = pDC->SelectObject(&textFont);// 设置字体格式
-				pDC->SetTextColor(m_axisX.AxisColor);	// 设置字体颜色				
+				pDC->SetTextColor(m_axisX.AxisColor);	// 设置字体颜色		
 				txtStr.Format(_T("%4.1f"),m_axisX.GetRangeLowerLimit()+i*m_vppXAxis*GridSize);
 				pDC->DrawText(txtStr,CRect(xi-m_axisX.CoorTextBoxWidth/2,
 					m_rectPlot.bottom+1,	// +1是为了不挡住X坐标轴

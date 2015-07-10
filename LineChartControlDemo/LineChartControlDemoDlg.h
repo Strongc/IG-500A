@@ -51,7 +51,7 @@ protected:
 private:
 	float m_time;
 	IG *ig;
-	// dataType 为了实现数据种类, 1为xAngel 2为yAngle 3为zAngle 4为xSpeed 5为ySpeed 6为zSpeed
+	// dataType 为了实现数据种类, 1为xAngel 2为yAngle 3为zAngle 4为xPosition 5为yPosition 6为zPosition
 	int dataType = 1;
 
 protected:

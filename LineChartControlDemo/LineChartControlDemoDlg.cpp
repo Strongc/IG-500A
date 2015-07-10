@@ -219,13 +219,13 @@ void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 		y0 = data.Angle[2];
 		break;
 	case 4:
-		y0 = data.Speed[0];
+		y0 = data.Position[0];
 		break;
 	case 5:
-		y0 = data.Speed[1];
+		y0 = data.Position[1];
 		break;
 	case 6:
-		y0 = data.Speed[2];
+		y0 = data.Position[2];
 		break;
 	default:
 		ASSERT(FALSE);
