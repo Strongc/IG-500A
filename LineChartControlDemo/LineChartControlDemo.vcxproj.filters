@@ -62,11 +62,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\LineChartControlDemo.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

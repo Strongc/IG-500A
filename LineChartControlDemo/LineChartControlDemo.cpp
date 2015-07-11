@@ -3,12 +3,10 @@
 
 #include "stdafx.h"
 #include "LineChartControlDemo.h"
-#include "LineChartControlDemoDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // CLineChartControlDemoApp
 
@@ -25,6 +23,21 @@ CLineChartControlDemoApp::CLineChartControlDemoApp()
 	// Place all significant initialization in InitInstance
 }
 
+void CLineChartControlDemoApp::DrawOther(CLineChartControlDemoDlg *pAnothers, int n){
+	if (NULL == pAnothers){
+		ASSERT(FALSE);
+	}
+	CLineChartControlDemoDlg *temp = NULL;
+	for (int i = 0; i < n; i++){
+		// 从2开始, 2~6
+		temp = &pAnothers[i];
+		temp->setType(i+2);
+		BOOL ret = temp->Create(IDD_LINECHARTCONTROLDEMO_DIALOG);
+		temp->ShowWindow(SW_SHOWNORMAL);
+	}
+
+	return;
+}
 
 // The one and only CLineChartControlDemoApp object
 
@@ -56,22 +69,12 @@ BOOL CLineChartControlDemoApp::InitInstance()
 	CLineChartControlDemoDlg dlg;
 	m_pMainWnd = &dlg;
 	//temp, 改变dlg数据
-	dlg.setType(4);
+	dlg.setType(1);
 
-	//xAngle {
-	CLineChartControlDemoDlg *pAnother = new CLineChartControlDemoDlg();
-	// FIXME
-	// 初期打算封装一个设置参数的函数，然后每个dialog设置不同的参数，
-	//即调用参数传不同的值，这样框图一样也可以达到不同的效果
-	if (pAnother){
-		pAnother->setType(1);
-		BOOL ret = pAnother->Create(IDD_LINECHARTCONTROLDEMO_DIALOG1);
-	} else {
-		ASSERT(FALSE);
-	}
-	pAnother->ShowWindow(SW_SHOWNORMAL);
-	// }
+	CLineChartControlDemoDlg *pAnothers = new CLineChartControlDemoDlg[5];
 
+	//封装函数，绘制另外5个图形
+	DrawOther(pAnothers, 5);
 
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
@@ -84,6 +87,8 @@ BOOL CLineChartControlDemoApp::InitInstance()
 		// TODO: Place code here to handle when the dialog is
 		//  dismissed with Cancel
 	}
+
+	delete[] pAnothers;
 
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.

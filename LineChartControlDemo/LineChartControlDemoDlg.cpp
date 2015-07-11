@@ -76,7 +76,7 @@ BEGIN_MESSAGE_MAP(CLineChartControlDemoDlg, CDialog)
 	ON_WM_SIZE()
 	ON_WM_SIZING()
 	ON_BN_CLICKED(IDC_DISP_LINE1, OnBnClickedDispLine1)
-	ON_BN_CLICKED(IDC_DISP_LINE2, OnBnClickedDispLine2)
+	//ON_BN_CLICKED(IDC_DISP_LINE2, OnBnClickedDispLine2)
 	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
@@ -111,8 +111,35 @@ BOOL CLineChartControlDemoDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	((CButton*)GetDlgItem(IDC_DISP_LINE1))->SetCheck(TRUE);
-	((CButton*)GetDlgItem(IDC_DISP_LINE2))->SetCheck(TRUE);
-	
+	//((CButton*)GetDlgItem(IDC_DISP_LINE2))->SetCheck(TRUE);
+	CString title;
+	// TODO
+	//field域中设置一个值（已经有了,type），switch切换标题
+	switch (dataType){
+	case 1:
+		title.Format("%s", "姿态角x方向");
+		break;
+	case 2:
+		title.Format("%s", "姿态角y方向");
+		break;
+	case 3:
+		title.Format("%s", "姿态角z方向");
+		break;
+	case 4:
+		title.Format("%s", "位移Position(x方向)");
+		break;
+	case 5:
+		title.Format("%s", "位移Position(y方向)");
+		break;
+	case 6:
+		title.Format("%s", "位移Position(z方向)");
+		break;
+	default:
+		ASSERT(FALSE);
+	}
+
+	this->SetWindowText(title);
+
 	//remember initial position
 	GetWindowRect(&m_rectOldWindow);
 	m_btnExit.GetClientRect(&m_rectBtnExit);
@@ -298,6 +325,7 @@ void CLineChartControlDemoDlg::OnSize(UINT nType, int cx, int cy)
 			rect.bottom-m_iBtnExitFromBottom-m_rectBtnExit.Height()-7-m_rectOldPlotWindow.top);
 	}
 }
+
 /*
  Check window size while resizeing, if small than origianl size, then restore to original size.
  */
@@ -317,8 +345,8 @@ void CLineChartControlDemoDlg::OnBnClickedDispLine1()
 	m_plot.GetLineByIndex(0)->IsShow = ((CButton*)GetDlgItem(IDC_DISP_LINE1))->GetCheck(); 
 }
 
-void CLineChartControlDemoDlg::OnBnClickedDispLine2()
-{
-	m_plot.GetLineByIndex(1)->IsShow = ((CButton*)GetDlgItem(IDC_DISP_LINE2))->GetCheck(); 
-}
-
+//void CLineChartControlDemoDlg::OnBnClickedDispLine2()
+//{
+//	m_plot.GetLineByIndex(1)->IsShow = ((CButton*)GetDlgItem(IDC_DISP_LINE2))->GetCheck(); 
+//}
+//

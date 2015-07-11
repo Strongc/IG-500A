@@ -8,7 +8,7 @@
 #endif
 
 #include "resource.h"		// main symbols
-
+#include "LineChartControlDemoDlg.h"
 
 // CLineChartControlDemoApp:
 // See LineChartControlDemo.cpp for the implementation of this class
@@ -18,6 +18,7 @@ class CLineChartControlDemoApp : public CWinApp
 {
 public:
 	CLineChartControlDemoApp();
+	void DrawOther(CLineChartControlDemoDlg *pAnothers, int );  // 绘制另外5个曲线
 
 // Overrides
 	public:

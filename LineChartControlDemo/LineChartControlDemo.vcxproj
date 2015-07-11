@@ -137,9 +137,6 @@
     <ResourceCompile Include="LineChartControlDemo.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\LineChartControlDemo.rc2" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="res\LineChartControlDemo.manifest">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
