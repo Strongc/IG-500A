@@ -142,10 +142,14 @@ BOOL CLineChartControlDemoDlg::OnInitDialog()
 
 	//remember initial position
 	GetWindowRect(&m_rectOldWindow);
+	//简单地设置了宽度，却有问题
+	//SetWindowPos(NULL, 0, 0, 400, 200, SWP_NOMOVE);
+
 	m_btnExit.GetClientRect(&m_rectBtnExit);
 	// plot指定rect，即绘图区
 	m_plot.GetWindowRect(&m_rectOldPlotWindow);
 	TRACE("m_rectOldPlotWindow.left=%d,m_rectOldPlotWindow.width=%d\n",m_rectOldPlotWindow.left,m_rectOldPlotWindow.Width());
+	//把屏幕上鼠标位置转换为程序的客户区的坐标
 	ScreenToClient(&m_rectOldPlotWindow);
 	TRACE("m_rectOldPlotWindow.left=%d,m_rectOldPlotWindow.width=%d\n",m_rectOldPlotWindow.left,m_rectOldPlotWindow.Width());
 	// 添加到数组中，并未画出
@@ -312,8 +316,8 @@ void CLineChartControlDemoDlg::OnSize(UINT nType, int cx, int cy)
 	if(m_btnExit.GetSafeHwnd())
 	{
 		m_btnExit.MoveWindow(rect.right-m_iBtnExitFromRight-m_rectBtnExit.Width(),
-		rect.bottom-m_iBtnExitFromBottom-m_rectBtnExit.Height(),
-		m_rectBtnExit.Width(),m_rectBtnExit.Height());
+							 rect.bottom-m_iBtnExitFromBottom-m_rectBtnExit.Height(),
+							 m_rectBtnExit.Width(),m_rectBtnExit.Height() );
 	}
 	if(m_plot.GetSafeHwnd())
 	{

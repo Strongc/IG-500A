@@ -1,7 +1,9 @@
+#include "stdafx.h"
 #include <stdio.h>
 #include "MyMatrix.h"
 #include <string.h>
 #include <cmath>
+#include <malloc.h>
 
 struct  State
 {
@@ -40,12 +42,10 @@ private:
 		return a*a + b*b + c*c;
 	}
 
-	float result[4][1] = {
-		{ 1 },
-		{ 0 },
-		{ 0 },
-		{ 0 }
-	};
+	//坑爹的vs，不用new居然不知道类型，导致无法初始化,只能在构造函数中初始化了
+	float **result/*= {
+		{ 1 }, { 0 }, { 0 }, { 0 }
+	}*/;
 
 	//获取到了新的角速度后，我们会在while循环中调用此递归函数
 	void cacloop(){
@@ -85,13 +85,22 @@ private:
 		float tempResult[4][4];
 		memcpy(tempResult, result, sizeof(float)* 16);
 
-		//强转again, I am sorry
-		cacMatrix((float**)first, (float**)tempResult, 4, 1, (float**)result);
+		//强转again
+		cacMatrix((const float**)first, (const float**)tempResult, 4, 1, (float**)result);
 
 		return;
 	}
 
 public:
+	Caculator(){
+		result = new float*[4];
+		for (int i = 0; i < 4; i++){
+			result[i] = new float[1];
+		}
+		result[0][0] = 1;
+		result[1][0] = result[2][0] = result[3][0] = 0;
+	}
+
 	//出参改变
 	void getState(State *state){
 		float temp1 = 2 * (result[0][0] * result[1][0] + result[1][0] * result[2][0]);

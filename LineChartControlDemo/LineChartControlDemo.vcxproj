@@ -117,7 +117,6 @@
     <ClCompile Include="ig500Trigger.cpp" />
     <ClCompile Include="LineChartControlDemo.cpp" />
     <ClCompile Include="LineChartControlDemoDlg.cpp" />
-    <ClCompile Include="MyMatrix.h" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -128,6 +127,7 @@
     <ClInclude Include="ig500Trigger.h" />
     <ClInclude Include="LineChartControlDemo.h" />
     <ClInclude Include="LineChartControlDemoDlg.h" />
+    <ClInclude Include="MyMatrix.h" />
     <ClInclude Include="Plot.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

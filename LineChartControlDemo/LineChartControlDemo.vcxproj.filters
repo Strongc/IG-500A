@@ -33,9 +33,6 @@
     <ClCompile Include="Caculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyMatrix.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LineChartControlDemo.h">
@@ -55,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="ig500Trigger.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMatrix.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

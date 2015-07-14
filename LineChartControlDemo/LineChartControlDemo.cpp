@@ -74,7 +74,7 @@ BOOL CLineChartControlDemoApp::InitInstance()
 	CLineChartControlDemoDlg *pAnothers = new CLineChartControlDemoDlg[5];
 
 	//封装函数，绘制另外5个图形
-	DrawOther(pAnothers, 5);
+	//DrawOther(pAnothers, 5);
 
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
