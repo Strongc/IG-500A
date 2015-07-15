@@ -142,8 +142,12 @@ BOOL CLineChartControlDemoDlg::OnInitDialog()
 
 	//remember initial position
 	GetWindowRect(&m_rectOldWindow);
+
 	//简单地设置了宽度，却有问题
-	//SetWindowPos(NULL, 0, 0, 400, 200, SWP_NOMOVE);
+	//CWnd::SetWindowPos(NULL, 0, 0, 600, 300, SWP_NOZORDER | SWP_NOMOVE);
+	CRect rect;
+	GetWindowRect(&rect);
+	MoveWindow(0, 0, rect.Width(), rect.Height(), TRUE);
 
 	m_btnExit.GetClientRect(&m_rectBtnExit);
 	// plot指定rect，即绘图区

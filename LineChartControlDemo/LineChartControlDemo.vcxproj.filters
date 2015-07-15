@@ -27,10 +27,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ig500Trigger.cpp">
+    <ClCompile Include="Caculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Caculator.cpp">
+    <ClCompile Include="ig500.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,11 +50,14 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ig500Trigger.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="EulerToDisplace.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MyMatrix.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ig500.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -114,7 +114,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Caculator.cpp" />
-    <ClCompile Include="ig500Trigger.cpp" />
+    <ClCompile Include="ig500.cpp" />
     <ClCompile Include="LineChartControlDemo.cpp" />
     <ClCompile Include="LineChartControlDemoDlg.cpp" />
     <ClCompile Include="Plot.cpp" />
@@ -124,7 +124,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ig500Trigger.h" />
+    <ClInclude Include="EulerToDisplace.h" />
+    <ClInclude Include="ig500.h" />
     <ClInclude Include="LineChartControlDemo.h" />
     <ClInclude Include="LineChartControlDemoDlg.h" />
     <ClInclude Include="MyMatrix.h" />

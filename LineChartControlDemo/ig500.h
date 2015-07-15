@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sbgCom.h>
-//定义函数指针
-typedef void(*TimerFunc)();
+#include "EulerToDisplace.h"
 
 /*
 定义封装类，封装ig500a的获取数据和处理数据
@@ -20,6 +19,7 @@ typedef void(*TimerFunc)();
 //	uint32  triggerMask;        /*!< Store which new data we have. */
 //};
 
+//个人感觉，FinalData定义在plot头文件中更合适
 struct FinalData{
 	float Angle[3];  //需要绘制的欧拉角，即姿态
 	float Position[3];  //需要得到的位置，东北高
@@ -30,11 +30,13 @@ void triggerCallback(SbgProtocolHandleInt *handler, uint32 triggerMask, SbgOutpu
 
 class IG{
 public:
-	void setUp();
-	//定时函数
-	//void loop(UserData *data);
-	//起定时器
-	void startTimer(TimerFunc *);
+	IG(){
+		memset(&calData, 0, sizeof(calData));
+		memset(&euler, 0, sizeof(euler));
+	}
+	
+	void setUp();  //通信初始化
+
 	/*
 	获取传感器的值，出参形式返回
 	*/
@@ -47,28 +49,29 @@ public:
 		data->Position[2] = fZPosition;
 		return;
 	}
+
 	/*
 	把output结构体中的数据暂存到类field中
 	*/
 	void tempStore(const SbgOutput *output);
+
+	/*
+	loop函数，由欧拉角计算位移
+	*/
+	void loop();
+
 private:
 	SbgProtocolHandle protocolHandle;
 	SbgErrorCode error = SBG_NO_ERROR;
-	FinalData calData;
-
-	/*
-	fXAngle: x 方向的旋转角
-	fYAngle: y 方向的旋转角
-	fZAngle: z 方向的旋转角
-	fXSpeed: x 方向的速度
-	fYSpeed: y 方向的速度
-	fZSpeed: z 方向的速度
-	*/
-
-	float fXAngle = 100, fYAngle = 100, fZAngle = 100;
-	float fXPosition = 200, fYPosition = 200, fZPosition = 200;
 	
-	/*float tempx[2];
-	float tempy[2];
-	float tempz[2];*/
+	FinalData calData;  //为了绘图
+	Euler euler;  //为了坐标转换
+	float dcm[3][3];  //dcm矩阵
+
+	float fXAngle = 100, fYAngle = 100, fZAngle = 100; //旋转角
+	float fXAcce = 0, fYAcce = 0, fZAcce = 0;  //加速度
+	float fXPosition = 200, fYPosition = 200, fZPosition = 200;
+
+	float SensorSpeed[3][1];
+	float EarthSpeed[3][1];
 };

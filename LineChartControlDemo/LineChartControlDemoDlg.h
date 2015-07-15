@@ -5,7 +5,7 @@
 #include "afxwin.h"
 #include "Plot.h"
 // ig added
-#include "ig500Trigger.h"
+#include "ig500.h"
 
 using namespace RealtimeCurve;
 

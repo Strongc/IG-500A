@@ -193,8 +193,8 @@ typedef struct _SbgOutput
 									<b>bit 4:</b> validUTC: 1= Valid UTC (Leap Seconds already known)		<br>*/
 	uint8	gpsNbSats;				/*!< GPS number of satellites used in position estimation */
 
-	int32	gpsTrueHeading;			/*!< GPS True heading value. in  (1e-5 ° unit) */
-	uint32	gpsTrueHeadingAccuracy;	/*!< GPS True heading accuracy value. in  (1e-5 ° unit) */
+	int32	gpsTrueHeading;			/*!< GPS True heading value. in  (1e-5 ?unit) */
+	uint32	gpsTrueHeadingAccuracy;	/*!< GPS True heading accuracy value. in  (1e-5 ?unit) */
 
 	int32	baroAltitude;			/*!< Altitude above reference zero based on pressure measurement in cms */
 	uint32	baroPressure;			/*!< Absolute pressure measurement in pascals*/

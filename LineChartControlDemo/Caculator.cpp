@@ -1,9 +1,13 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include <stdio.h>
 #include "MyMatrix.h"
 #include <string.h>
 #include <cmath>
 #include <malloc.h>
+
+/*
+è¿™äº›ä»£ç æ˜¯ç”¨åŠ é€Ÿåº¦è®¡ã€é™€èºä»ªæ•°æ®è®¡ç®—æ¬§æ‹‰è§’ï¼Œè¯¯å·®æ¯”è¾ƒå¤§ï¼Œæ‰€ä»¥è€ƒè™‘ä½¿ç”¨IG500Aè‡ªå¸¦çš„å‡½æ•°æ›¿ä»£
+*/
 
 struct  State
 {
@@ -24,13 +28,14 @@ struct DDQ{
 	float ddqz;
 };
 
-class Caculator {
+class Calculator {
 private:
 	float t;
 	State state;
 	DDQ ddQ;
 	AngleSpeed angleSpeed;
-	// ¼ÆËãDDQ£¬ ³ö²ÎĞÎÊ½
+	float ddm[3][3];
+	// è®¡ç®—DDQï¼Œ å‡ºå‚å½¢å¼
 	void cacDDQ(const AngleSpeed *angleSpeed, DDQ *ddQ){
 		ddQ->ddqx = angleSpeed->wx * t;
 		ddQ->ddqy = angleSpeed->wy * t;
@@ -42,15 +47,15 @@ private:
 		return a*a + b*b + c*c;
 	}
 
-	//¿ÓµùµÄvs£¬²»ÓÃnew¾ÓÈ»²»ÖªµÀÀàĞÍ£¬µ¼ÖÂÎŞ·¨³õÊ¼»¯,Ö»ÄÜÔÚ¹¹Ôìº¯ÊıÖĞ³õÊ¼»¯ÁË
+	//å‘çˆ¹çš„vsï¼Œä¸ç”¨newä¸çŸ¥é“ç±»å‹ï¼Œå¯¼è‡´æ— æ³•åˆå§‹åŒ–,åªèƒ½åœ¨æ„é€ å‡½æ•°ä¸­åˆå§‹åŒ–äº†
 	float **result/*= {
 		{ 1 }, { 0 }, { 0 }, { 0 }
 	}*/;
 
-	//»ñÈ¡µ½ÁËĞÂµÄ½ÇËÙ¶Èºó£¬ÎÒÃÇ»áÔÚwhileÑ­»·ÖĞµ÷ÓÃ´Ëµİ¹éº¯Êı
+	//è·å–åˆ°äº†æ–°çš„è§’é€Ÿåº¦åï¼Œæˆ‘ä»¬ä¼šåœ¨whileå¾ªç¯ä¸­è°ƒç”¨æ­¤é€’å½’å‡½æ•°
 	void cacloop(){
-		//ÎªÊ²Ã´ÔÚloopº¯ÊıÄÚ²¿¶¨ÒåIÄØ£¬ ÒòÎªÈç¹ûÔÚÍâ²¿µÄ»°£¬Ã¿´Î¸ü¸ÄIÖµ£¬I¾Í²»ÊÇÒâÒåµÄIÁË
-		// ÔÚÄÚ²¿¶¨ÒåµÄ»°£¬Ã¿´Îloop¶¼»á×Ô¶¨¸üĞÂ
+		//ä¸ºä»€ä¹ˆåœ¨loopå‡½æ•°å†…éƒ¨å®šä¹‰Iå‘¢ï¼Œ å› ä¸ºå¦‚æœåœ¨å¤–éƒ¨çš„è¯ï¼Œæ¯æ¬¡æ›´æ”¹Iå€¼ï¼ŒIå°±ä¸æ˜¯æ„ä¹‰çš„Iäº†
+		// åœ¨å†…éƒ¨å®šä¹‰çš„è¯ï¼Œæ¯æ¬¡loopéƒ½ä¼šè‡ªå®šæ›´æ–°
 		float I[4][4] = {
 			{ 1, 0, 0, 0 },
 			{ 0, 1, 0, 0 },
@@ -62,7 +67,7 @@ private:
 		float temp3 = 1 - temp2 / 8 + temp2*temp2 / 384;
 		float temp4 = 0.5 - temp2 / 48;
 		
-		//¶¨ÒåH¾ØÕó
+		//å®šä¹‰HçŸ©é˜µ
 		float H[4][4] = {
 			{ 0, -1 * ddQ.ddqx, -1 * ddQ.ddqy, -1 * ddQ.ddqz },
 			{ ddQ.ddqx, 0, ddQ.ddqz, -1 * ddQ.ddqy },
@@ -70,11 +75,11 @@ private:
 			{ ddQ.ddqz, ddQ.ddqy, -1 *ddQ.ddqx, 0},
 		};
 
-		// °Ñ4x4Êı×éÇ¿×ªÎª¶şÎ¬Ö¸Õë£¬maybe some problem
+		// æŠŠ4x4æ•°ç»„å¼ºè½¬ä¸ºäºŒç»´æŒ‡é’ˆï¼Œmaybe some problem
 		kMatrix((float**)I, 4, 4, temp4);
 		kMatrix((float **)H, 4, 4, temp4);
 
-		// ¶¨Òå¶şÎ¬Êı×é, ¼´¹«Ê½ÖĞµÄµÚÒ»¸ö4x4¾ØÕó
+		// å®šä¹‰äºŒç»´æ•°ç»„, å³å…¬å¼ä¸­çš„ç¬¬ä¸€ä¸ª4x4çŸ©é˜µ
 		float first[4][4];
 		for (int i = 0; i < 4; i++){
 			for (int j = 0; j < 4; j++){
@@ -85,23 +90,25 @@ private:
 		float tempResult[4][4];
 		memcpy(tempResult, result, sizeof(float)* 16);
 
-		//Ç¿×ªagain
-		cacMatrix((const float**)first, (const float**)tempResult, 4, 1, (float**)result);
+		cacMatrix((const float**)first, (const float**)tempResult, 4, 1, result);
 
 		return;
 	}
 
 public:
-	Caculator(){
+	Calculator(){
+		//åˆå§‹å€¼èµ‹å€¼
 		result = new float*[4];
 		for (int i = 0; i < 4; i++){
 			result[i] = new float[1];
 		}
 		result[0][0] = 1;
 		result[1][0] = result[2][0] = result[3][0] = 0;
+
+		memset(ddm, 0, sizeof(float)* 9);
 	}
 
-	//³ö²Î¸Ä±ä
+	//å‡ºå‚æ”¹å˜ï¼Œè·å–å§¿æ€è§’
 	void getState(State *state){
 		float temp1 = 2 * (result[0][0] * result[1][0] + result[1][0] * result[2][0]);
 		float temp2 = 1 - 2 * (result[1][0] * result[1][0] + result[2][0] * result[2][0]);
@@ -114,4 +121,5 @@ public:
 		
 		return;
 	}
+
 };
