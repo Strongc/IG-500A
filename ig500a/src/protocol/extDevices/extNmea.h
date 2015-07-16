@@ -51,7 +51,7 @@ typedef enum _SbgNmeaCommand
  *  \param[in]	options				NMEA GPS options. Possible choices are:
  *									- SBG_NMEA_OPT_HDT_AFTER_RMC
  *									- SBG_NMEA_OPT_HDT_BEFORE_RMC
- *	\param[in]	stdHeadingAcuracy	True heading standard accuracy. Expressed in ° with 1 LSB = 10e-5 °
+ *	\param[in]	stdHeadingAcuracy	True heading standard accuracy. Expressed in ?with 1 LSB = 10e-5 ?
  *	\return							SBG_NO_ERROR if no error.
  */
 SbgErrorCode sbgExtNmeaSetOptions(SbgProtocolHandle handle, uint16 options, uint32 stdHeadingAcuracy);
@@ -62,7 +62,7 @@ SbgErrorCode sbgExtNmeaSetOptions(SbgProtocolHandle handle, uint16 options, uint
  *  \param[out]	pOptions			NMEA GPS options. Possible choices are:
  *									- SBG_NMEA_OPT_HDT_AFTER_RMC
  *									- SBG_NMEA_OPT_HDT_BEFORE_RMC
- *	\param[out]	pStdHeadingAcuracy	True heading standard accuracy. Expressed in ° with 1 LSB = 10e-5 °.
+ *	\param[out]	pStdHeadingAcuracy	True heading standard accuracy. Expressed in ?with 1 LSB = 10e-5 ?
  *	\return							SBG_NO_ERROR if no error.
  */
 SbgErrorCode sbgExtNmeaGetOptions(SbgProtocolHandle handle, uint16 *pOptions, uint32 *pStdHeadingAcuracy);

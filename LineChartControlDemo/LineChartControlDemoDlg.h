@@ -6,6 +6,7 @@
 #include "Plot.h"
 // ig added
 #include "ig500.h"
+#include "MyMatrix.h"
 
 using namespace RealtimeCurve;
 

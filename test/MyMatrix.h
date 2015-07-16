@@ -3,7 +3,6 @@
 */
 #pragma once
 #include <iostream>
-#include "stdafx.h"
 using namespace std;
 
 // 网上矩阵乘法太过复杂[使用模板，为了适配而大大增加了代码]

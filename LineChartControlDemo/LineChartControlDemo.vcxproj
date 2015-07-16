@@ -117,6 +117,7 @@
     <ClCompile Include="ig500.cpp" />
     <ClCompile Include="LineChartControlDemo.cpp" />
     <ClCompile Include="LineChartControlDemoDlg.cpp" />
+    <ClCompile Include="MyMatrix.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

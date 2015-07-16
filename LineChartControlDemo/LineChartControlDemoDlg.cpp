@@ -240,7 +240,7 @@ void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 	*/
 	FinalData data;
 	memset(&data, 0, sizeof(FinalData));
-	ig->getData(&data);
+	ig->getIGData(&data);
 	float y0 = 0;
 	switch (dataType)
 	{
@@ -281,7 +281,7 @@ void CLineChartControlDemoDlg::OnTimerPro(UINT nIDEvent){
 	//1.从IG类获取数据, 这里的m_time增加的时间为0.2f，但是肯定是要更改的，改为loop的睡眠时间
 	FinalData finalData;
 	memset(&finalData, 0, sizeof(finalData));
-	ig->getData(&finalData);
+	ig->getIGData(&finalData);
 	//增加点, TODO
 	m_plot.AddNewPoint(m_time, finalData.Angle[0], 0);
 	m_plot.AddNewPoint(m_time, finalData.Angle[1], 1);

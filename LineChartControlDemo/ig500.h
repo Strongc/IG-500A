@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sbgCom.h>
 #include "EulerToDisplace.h"
+#include "MyMatrix.h"
 
 /*
 定义封装类，封装ig500a的获取数据和处理数据
@@ -31,6 +32,10 @@ void triggerCallback(SbgProtocolHandleInt *handler, uint32 triggerMask, SbgOutpu
 class IG{
 public:
 	IG(){
+		dcm.setInit(3, 3);
+		SensorSpeed.setInit(3, 1);
+		EarthSpeed.setInit(3, 1);
+
 		memset(&calData, 0, sizeof(calData));
 		memset(&euler, 0, sizeof(euler));
 	}
@@ -40,7 +45,7 @@ public:
 	/*
 	获取传感器的值，出参形式返回
 	*/
-	void getData(FinalData *data){
+	void getIGData(FinalData *data){
 		data->Angle[0] = fXAngle;
 		data->Angle[1] = fYAngle;
 		data->Angle[2] = fZAngle;
@@ -66,12 +71,14 @@ private:
 	
 	FinalData calData;  //为了绘图
 	Euler euler;  //为了坐标转换
-	float dcm[3][3];  //dcm矩阵
+	Matrix dcm;  //dcm矩阵
 
 	float fXAngle = 100, fYAngle = 100, fZAngle = 100; //旋转角
 	float fXAcce = 0, fYAcce = 0, fZAcce = 0;  //加速度
 	float fXPosition = 200, fYPosition = 200, fZPosition = 200;
 
-	float SensorSpeed[3][1];
-	float EarthSpeed[3][1];
+	//float SensorSpeed[3][1];
+	Matrix SensorSpeed;
+	//float EarthSpeed[3][1];
+	Matrix EarthSpeed;
 };

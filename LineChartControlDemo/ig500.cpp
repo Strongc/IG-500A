@@ -1,32 +1,35 @@
 ﻿#include "stdafx.h"
 #include "ig500.h"
 
-// 网上矩阵乘法太过复杂[使用模板，为了适配而大大增加了代码]
 // 矩阵的乘法，输入两个二位数组，n代表第一个矩阵为n行，m代表second具有m列
-void cacMatrix(const float **first, const float **second, const int n, const int m, float **result){
-	//result 应该是一个 nxm 矩阵
-	for (int i = 0; i < n; i++){
-		float temp = 0;
-		for (int j = 0; j < m; j++){
-			temp += first[i][j] * second[j][i];
-			if (j == (m - 1)){
-				result[i][j] = temp;
-			}
-		}
-	}
-	return;
-}
+// nm参数为 first矩阵列数 == second矩阵行数 == nm
+//void cacMatrix(float **firstpointer, float **secondpointer, const int n, const int m, const int nm, float **resultpointer){
+//
+//	float(*first)[nm] = (float(*)[nm])firstpointer;
+//	float(*second)[m] = (float(*)[m])secondpointer;
+//	float(*result)[m] = (float(*)[m])resultpointer;
+//	for (int i = 0; i < n; i++){
+//		for (int j = 0; j < m; j++){
+//			for (int k = 0; k<n; ++k){
+//				result[i][j] += first[i][k] * second[k][j];
+//			}
+//		}
+//	}
+//
+//	return;
+//}
 
 //matrix in and out
 //矩阵乘法，每个元素都乘以k
-void kMatrix(float **matrix, int n, int m, float k){
-	for (int i = 0; i < n; i++){
-		for (int j = 0; j < m; j++){
-			matrix[i][j] *= k;
-		}
-	}
-	return;
-}
+//void kMatrix(float **matrixpointer, int n, int m, float k){
+//	float(*matrix)[3] = (float(*)[3])matrixpointer;
+//	for (int i = 0; i < n; i++){
+//		for (int j = 0; j < m; j++){
+//			matrix[i][j] *= k;
+//		}
+//	}
+//	return;
+//}
 
 /*
 DCM=
@@ -34,18 +37,20 @@ cos2cos3 sin1sin2cos3−cos1sin3 cos1sin2sin3+sin1sin3
 cos2sin3 sin1sin2sin3+cos1cos3 cos1sin2sin3−sin1cos3
 −sin2    sin1cos2              cos1cos2
 */
-void getDCM(Euler *state, float **dcm){
-	dcm[0][0] = cos(state->pitch) * cos(state->yaw);
-	dcm[0][1] = sin(state->roll) * sin(state->pitch) * cos(state->yaw) - cos(state->roll) * sin(state->yaw);
-	dcm[0][2] = cos(state->roll) * sin(state->pitch) * sin(state->yaw) + sin(state->roll) * sin(state->yaw);
+void getDCM(Euler *state, Matrix &dcm){
 
-	dcm[1][0] = cos(state->pitch) * sin(state->yaw);
-	dcm[1][1] = sin(state->roll) * sin(state->pitch) * sin(state->yaw) + cos(state->roll) * cos(state->yaw);
-	dcm[0][2] = cos(state->roll) * sin(state->pitch) * sin(state->yaw) - sin(state->roll) * cos(state->yaw);
+	// dcm更改可以直接作用于dcmpointer
+	(dcm.data)[0][0] = cos(state->pitch) * cos(state->yaw);
+	dcm.data[0][1] = sin(state->roll) * sin(state->pitch) * cos(state->yaw) - cos(state->roll) * sin(state->yaw);
+	dcm.data[0][2] = cos(state->roll) * sin(state->pitch) * sin(state->yaw) + sin(state->roll) * sin(state->yaw);
 
-	dcm[2][0] = -sin(state->pitch);
-	dcm[2][1] = sin(state->roll) * cos(state->pitch);
-	dcm[2][2] = cos(state->roll) * cos(state->pitch);
+	dcm.data[1][0] = cos(state->pitch) * sin(state->yaw);
+	dcm.data[1][1] = sin(state->roll) * sin(state->pitch) * sin(state->yaw) + cos(state->roll) * cos(state->yaw);
+	dcm.data[0][2] = cos(state->roll) * sin(state->pitch) * sin(state->yaw) - sin(state->roll) * cos(state->yaw);
+
+	dcm.data[2][0] = -sin(state->pitch);
+	dcm.data[2][1] = sin(state->roll) * cos(state->pitch);
+	dcm.data[2][2] = cos(state->roll) * cos(state->pitch);
 
 	return;
 }
@@ -102,19 +107,20 @@ void IG::loop(){
 	euler.pitch = fYAngle;
 	euler.yaw = fZAngle;
 
-	getDCM(&euler, (float **)dcm);  //获取dcm矩阵
+	getDCM(&euler, dcm);  //获取dcm矩阵
 
-	SensorSpeed[0][0] += 0.1 *fXAcce;  //根据加速度，累计速度，不追求精确
-	SensorSpeed[1][0] += 0.1 *fYAcce;
-	SensorSpeed[2][0] += 0.1 *fZAcce;
+	SensorSpeed.data[0][0] += 0.1 *fXAcce;  //根据加速度，累计速度，不追求精确
+	SensorSpeed.data[1][0] += 0.1 *fYAcce;
+	SensorSpeed.data[2][0] += 0.1 *fZAcce;
 
 	//根据DCM进行变换,进行矩阵乘法
-	cacMatrix((const float **)dcm, (const float **)SensorSpeed, 3, 1, (float **)EarthSpeed);
+	//cacMatrix((float **)dcm, (float **)SensorSpeed, 3, 1, 3,(float **)EarthSpeed);
+	EarthSpeed = dcm * SensorSpeed;
 
 	//根据EarthSpeed，计算出地球位移
-	fXPosition += EarthSpeed[0][0] * 0.1;
-	fYPosition += EarthSpeed[0][1] * 0.1;
-	fZPosition += EarthSpeed[0][2] * 0.1;
+	fXPosition += EarthSpeed.data[0][0] * 0.1;
+	fYPosition += EarthSpeed.data[0][1] * 0.1;
+	fZPosition += EarthSpeed.data[0][2] * 0.1;
 
 	return;
 }
