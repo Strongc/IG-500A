@@ -7,6 +7,7 @@
 
 /*
 这些代码是用加速度计、陀螺仪数据计算欧拉角，误差比较大，所以考虑使用IG500A自带的函数替代
+即现在这里的代码无用!
 */
 struct  State
 {
@@ -49,57 +50,57 @@ private:
 	Matrix result;
 
 	//获取到了新的角速度后，我们会在while循环中调用此递归函数
-	//void cacloop(){
-	//	//为什么在loop函数内部定义I呢， 因为如果在外部的话，每次更改I值，I就不是意义的I了
-	//	// 在内部定义的话，每次loop都会自定更新
-	//	float I[4][4] = {
-	//		{ 1, 0, 0, 0 },
-	//		{ 0, 1, 0, 0 },
-	//		{ 0, 0, 1, 0 },
-	//		{ 0, 0, 0, 1 }
-	//	};
-	//	float temp1[4][4];
-	//	float temp2 = MyPow(ddQ.ddqx, ddQ.ddqy, ddQ.ddqz);
-	//	float temp3 = 1 - temp2 / 8 + temp2*temp2 / 384;
-	//	float temp4 = 0.5 - temp2 / 48;
-	//	
-	//	//定义H矩阵
-	//	float H[4][4] = {
-	//		{ 0, -1 * ddQ.ddqx, -1 * ddQ.ddqy, -1 * ddQ.ddqz },
-	//		{ ddQ.ddqx, 0, ddQ.ddqz, -1 * ddQ.ddqy },
-	//		{ ddQ.ddqy, ddQ.ddqz, 0, ddQ.ddqx },
-	//		{ ddQ.ddqz, ddQ.ddqy, -1 *ddQ.ddqx, 0},
-	//	};
+	void cacloop(){
+		//为什么在loop函数内部定义I呢， 因为如果在外部的话，每次更改I值，I就不是意义的I了
+		// 在内部定义的话，每次loop都会自定更新
+		float I[4][4] = {
+			{ 1, 0, 0, 0 },
+			{ 0, 1, 0, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 0, 1 }
+		};
+		float temp1[4][4];
+		float temp2 = MyPow(ddQ.ddqx, ddQ.ddqy, ddQ.ddqz);
+		float temp3 = 1 - temp2 / 8 + temp2*temp2 / 384;
+		float temp4 = 0.5 - temp2 / 48;
+		
+		//定义H矩阵
+		float H[4][4] = {
+			{ 0, -1 * ddQ.ddqx, -1 * ddQ.ddqy, -1 * ddQ.ddqz },
+			{ ddQ.ddqx, 0, ddQ.ddqz, -1 * ddQ.ddqy },
+			{ ddQ.ddqy, ddQ.ddqz, 0, ddQ.ddqx },
+			{ ddQ.ddqz, ddQ.ddqy, -1 *ddQ.ddqx, 0},
+		};
 
-	//	//kMatrix((float**)I, 4, 4, temp4);
-	//	//kMatrix((float **)H, 4, 4, temp4);
-	//	for (int i = 0; i < 4; i++){
-	//		for (int j = 0; i < 4; j++){
-	//			I[i][j] *= temp4;
-	//		}
-	//	}
+		//kMatrix((float**)I, 4, 4, temp4);
+		//kMatrix((float **)H, 4, 4, temp4);
+		for (int i = 0; i < 4; i++){
+			for (int j = 0; i < 4; j++){
+				I[i][j] *= temp4;
+			}
+		}
 
-	//	for (int i = 0; i < 4; i++){
-	//		for (int j = 0; i < 4; j++){
-	//			H[i][j] *= temp4;
-	//		}
-	//	}
+		for (int i = 0; i < 4; i++){
+			for (int j = 0; i < 4; j++){
+				H[i][j] *= temp4;
+			}
+		}
 
-	//	// 定义二维数组, 即公式中的第一个4x4矩阵
-	//	Matrix first(4, 4);
-	//	for (int i = 0; i < 4; i++){
-	//		for (int j = 0; j < 4; j++){
-	//			first.data[i][j] = I[i][j] + H[i][j];
-	//		}
-	//	}
+		// 定义二维数组, 即公式中的第一个4x4矩阵
+		Matrix first(4, 4);
+		for (int i = 0; i < 4; i++){
+			for (int j = 0; j < 4; j++){
+				first.data[i][j] = I[i][j] + H[i][j];
+			}
+		}
 
-	//	Matrix tempResult(result);
-	//	
-	//	//cacMatrix((float**)first, (float**)tempResult, 4, 1, 4, result);
-	//	result = first * tempResult;  //利用Matrix类的乘法重载
+		Matrix tempResult(result);
+		
+		//cacMatrix((float**)first, (float**)tempResult, 4, 1, 4, result);
+		result = first * tempResult;  //利用Matrix类的乘法重载
 
-	//	return;
-	//}
+		return;
+	}
 
 public:
 	Calculator(){

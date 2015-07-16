@@ -5,6 +5,8 @@
 #include "LineChartControlDemo.h"
 #include "LineChartControlDemoDlg.h"
 #include <math.h>
+#include <iostream>
+#include <thread>
 
 using namespace RealtimeCurve;
 
@@ -43,11 +45,23 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 END_MESSAGE_MAP()
 
+void IgThreadFunc(IG *ig){
+	ig->setUp();
+	ofstream f5("D://temp_ig.txt");
+	f5 << ig->otherThread << "\n";
+	return;
+};
+
 // CLineChartControlDemoDlg dialog
 CLineChartControlDemoDlg::CLineChartControlDemoDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CLineChartControlDemoDlg::IDD, pParent)
 {
 	ig = new IG();  // 初始化ig类
+
+	pf = IgThreadFunc;
+
+	//ig->setUp();
+
 	m_time	= 0.0f;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_iBtnExitFromRight = 10;
@@ -242,10 +256,12 @@ void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 	memset(&data, 0, sizeof(FinalData));
 	ig->getIGData(&data);
 	float y0 = 0;
+	ofstream f4("D:temp_y0.txt");
 	switch (dataType)
 	{
 	case 1:
 		y0 = data.Angle[0];
+		f4<< y0 << "\n";
 		break;
 	case 2:
 		y0 = data.Angle[1];
@@ -272,19 +288,6 @@ void CLineChartControlDemoDlg::OnTimer(UINT nIDEvent)
 	m_time += 0.10f;
 	//m_plot.GetAxisX().GetRangeLowerLimit() += 0.10f; 
 	//CDialog::OnTimer(nIDEvent);
-}
-
-/*
-我们的timer, TODO,算了，直接在上面OnTimer更改了
-*/
-void CLineChartControlDemoDlg::OnTimerPro(UINT nIDEvent){
-	//1.从IG类获取数据, 这里的m_time增加的时间为0.2f，但是肯定是要更改的，改为loop的睡眠时间
-	FinalData finalData;
-	memset(&finalData, 0, sizeof(finalData));
-	ig->getIGData(&finalData);
-	//增加点, TODO
-	m_plot.AddNewPoint(m_time, finalData.Angle[0], 0);
-	m_plot.AddNewPoint(m_time, finalData.Angle[1], 1);
 }
 
 void CLineChartControlDemoDlg::OnBnClickedStart()

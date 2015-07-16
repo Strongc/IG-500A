@@ -7,7 +7,7 @@
 #include <sbgCom.h>
 #include "EulerToDisplace.h"
 #include "MyMatrix.h"
-
+#include <fstream>
 /*
 定义封装类，封装ig500a的获取数据和处理数据
 在外界，调用函数就可以得到数据，进行绘制
@@ -32,14 +32,17 @@ void triggerCallback(SbgProtocolHandleInt *handler, uint32 triggerMask, SbgOutpu
 class IG{
 public:
 	IG(){
+		otherThread = 1;
 		dcm.setInit(3, 3);
 		SensorSpeed.setInit(3, 1);
 		EarthSpeed.setInit(3, 1);
-
+		
 		memset(&calData, 0, sizeof(calData));
 		memset(&euler, 0, sizeof(euler));
 	}
 	
+	int otherThread;
+
 	void setUp();  //通信初始化
 
 	/*
@@ -81,4 +84,8 @@ private:
 	Matrix SensorSpeed;
 	//float EarthSpeed[3][1];
 	Matrix EarthSpeed;
+
+	int times = 0;
+
+	
 };

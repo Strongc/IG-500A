@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "LineChartControlDemo.h"
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,7 +44,6 @@ void CLineChartControlDemoApp::DrawOther(CLineChartControlDemoDlg *pAnothers, in
 
 CLineChartControlDemoApp theApp;
 
-
 // CLineChartControlDemoApp initialization
 
 BOOL CLineChartControlDemoApp::InitInstance()
@@ -75,8 +75,18 @@ BOOL CLineChartControlDemoApp::InitInstance()
 
 	//封装函数，绘制另外5个图形
 	//DrawOther(pAnothers, 5);
-
 	INT_PTR nResponse = dlg.DoModal();
+
+	dlg.ig->otherThread = 2;
+
+	ofstream f6("D://temp_ig_main.txt");
+	f6 << dlg.ig->otherThread << "\n";
+
+	// 很有可能是起了副本，然后就两个不同的栈上的数据
+	std::thread t1(dlg.pf, dlg.ig);  // pass ig 
+
+	t1.join();
+
 	if (nResponse == IDOK)
 	{
 		// TODO: Place code here to handle when the dialog is

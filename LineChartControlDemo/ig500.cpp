@@ -1,4 +1,6 @@
 ﻿#include "stdafx.h"
+#include <fstream>
+#include <stdlib.h>
 #include "ig500.h"
 
 // 矩阵的乘法，输入两个二位数组，n代表第一个矩阵为n行，m代表second具有m列
@@ -69,10 +71,14 @@ void IG::setUp(){
 			error = sbgGetSpecificOutput(protocolHandle, SBG_OUTPUT_ACCELEROMETERS, &output);
 			if (error == SBG_NO_ERROR)
 			{
+				times++;
 				tempStore(&output); //把output数据更新到类field域中
 				loop();  //循环计算
 			} else {
 				printf("error when get euler or position data from IG-500A\n");
+				ofstream f0("D://temp.txt");
+				f0 << "error" << "\n";
+				exit(0);
 			}
 
 			// Small pause to unload CPU
@@ -98,6 +104,12 @@ void IG::tempStore(const SbgOutput *output){
 	fXAcce = output->stateEuler[0];
 	fYAcce = output->stateEuler[1];
 	fZAcce = output->stateEuler[2];
+
+	ofstream f0("D:temp.txt");
+	f0 << times << "\n";
+
+	ofstream f1("D:temp_euler.txt");
+	f1 << fXAngle << "\n";
 
 	return;
 }

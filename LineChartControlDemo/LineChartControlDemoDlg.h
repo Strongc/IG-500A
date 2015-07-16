@@ -19,6 +19,11 @@ public:
 
 	// FIXME 添加设置Type的函数
 	void setType(int type);
+
+	void(*pf)(IG *);
+	
+	IG *ig;
+
 // Dialog Data
 	enum { IDD = IDD_LINECHARTCONTROLDEMO_DIALOG };
 
@@ -51,7 +56,7 @@ protected:
 	CRect m_rectOldPlotWindow;
 private:
 	float m_time;
-	IG *ig;
+	
 	// dataType 为了实现数据种类, 1为xAngel 2为yAngle 3为zAngle 4为xPosition 5为yPosition 6为zPosition
 	int dataType = 1;
 
@@ -59,5 +64,4 @@ protected:
 	CButton m_btnExit;
 	int m_iBtnExitFromRight;
 	int m_iBtnExitFromBottom;
-	
 };
